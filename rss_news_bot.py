@@ -2,12 +2,17 @@ import discord
 import feedparser
 import asyncio
 
-# Configurações
+# Config
 TOKEN = ''
+
+#Set your channel IDs. If you want everything in a single channel, just use the same ID
+AI_CHANNEL_ID = 123
+CRYPTO_CHANNEL_ID = 123
+
 
 # Configurações de canais e feeds
 FEEDS_CONFIG = {
-    1275274798955626566: [  # AI feeds
+    AI_CHANNEL_ID: [  # AI feeds
         'https://rss.app/feeds/gkS98dS5aYElxHCJ.xml',
         'https://rss.app/feeds/yJNxIvQE4cSoS9ci.xml',
         'https://www.artificialintelligence-news.com/feed/',
@@ -18,7 +23,7 @@ FEEDS_CONFIG = {
         'https://syncedreview.com/feed/',
         'https://aitrendz.xyz/feed/',
     ],
-    1275265550091685928: [  # Crypto feeds
+    CRYPTO_CHANNEL_ID: [  # Crypto feeds
         'https://rss.app/feeds/hvWo4PXRRGTl29Vp.xml',
         'https://cointelegraph.com/rss',
         'https://decrypt.co/feed',
@@ -31,26 +36,26 @@ FEEDS_CONFIG = {
     ]
 }
 
-CHECK_INTERVAL = 3600  # Intervalo de verificação em segundos (1 hora)
+CHECK_INTERVAL = 3600  
 
-# Configurar o cliente do bot
+# Bot client
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
 
-# Evento on_ready
+# Event on_ready
 @client.event
 async def on_ready():
-    print(f'Bot conectado como {client.user}')
+    print(f'Bot connected as {client.user}')
     for channel_id in FEEDS_CONFIG.keys():
         channel = client.get_channel(channel_id)
         if channel:
-            await channel.send("Olá, mundo")
+            await channel.send("Hello, world")
     
-    # Iniciar o loop de verificação
+    # Verification loop
     client.loop.create_task(check_feeds())
 
-# Função para verificar os feeds RSS periodicamente
+# Verify feed
 async def check_feeds():
     last_entries = {channel_id: {url: None for url in urls} for channel_id, urls in FEEDS_CONFIG.items()}
 
@@ -71,5 +76,5 @@ async def check_feeds():
         
         await asyncio.sleep(CHECK_INTERVAL)
 
-# Iniciar o bot
+
 client.run(TOKEN)
